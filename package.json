@@ -1,0 +1,9 @@
+{
+  "name": "movie-finder",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "npm run server && npm run client",
+    "server": "cd server && npm start",
+    "client": "cd app && npm start"
+  }
+}
