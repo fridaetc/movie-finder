@@ -1,0 +1,13 @@
+.Movie {
+  float: left;
+  width: 32.66%;
+  min-height: 140px;
+  padding: 5px;
+  background: white;
+  margin-right: 1%;
+  margin-bottom: 1%;
+}
+
+.Movie:nth-child(3n) {
+  margin-right: 0;
+}

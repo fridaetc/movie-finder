@@ -37,3 +37,12 @@ exports.isLoggedIn = function(token, cb) {
    cb(decoded);
  });
 }
+
+exports.getUser = function(userId, cb) {
+  let user = db.getUserById(userId);
+  if(user) {
+    cb({userName: user.name});
+  } else {
+    cb(null);
+  }
+}
