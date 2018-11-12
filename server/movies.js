@@ -35,7 +35,7 @@ exports.getRecommendedMovies = function(userId, type, cb) {
     } else {
       usersSim = pearson.get(allRatings, userRatings, userId);
     }
-console.log(usersSim)
+
     //calculate weighted scores
     allMovies.forEach(function(movie, i) {
       let userHasRated = userRatings.find(o => o.movie == movie.id);
