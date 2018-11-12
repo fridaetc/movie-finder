@@ -8,7 +8,7 @@ export default class Movies extends Component {
     isLoading: true,
     movies: [],
     error: null,
-    option: "euclidean"
+    option: "pearson"
   }
 
   componentDidMount() {

@@ -38,8 +38,12 @@ app.get('/movies', (req, res) => {
           res.status(200).send({data: movies});
         });
       } else {
-        movies.getRecommendedMovies(userId, function(movies) {
-          res.status(200).send({data: movies});
+        movies.getRecommendedMovies(userId, type, function(movies) {
+          if(movies) {
+            res.status(200).send({data: movies});
+          } else {
+            res.status(200).send({data: null, message: "You have watched all recommended movies already!"});
+          }
         });
       }
     }

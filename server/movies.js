@@ -1,5 +1,6 @@
 const db = require('./db/db');
 const euclidean = require('./euclidean');
+const pearson = require('./pearson');
 
 exports.getMovies = function(userId, cb) {
   let allMovies = db.getMovies();
@@ -18,36 +19,52 @@ exports.getMovies = function(userId, cb) {
   cb(allMovies);
 }
 
-exports.getRecommendedMovies = function(userId, cb) {
+exports.getRecommendedMovies = function(userId, type, cb) {
+  let userRatings = db.getUserRatings(userId);
+
   let allRatings = db.getRatings(), //compare with ALL users
-  allMovies = db.getMovies(),
-  userRatings = db.getUserRatings(userId),
-  usersSim = euclidean.get(allRatings, userRatings, userId),
+  allMovies = db.getMovies("avgRating"),
+  usersSim = [],
   wsMovies = [],
   ratingSum = 0,
   ratingCount = 0;
 
-  allMovies.forEach(function(movie, i) {
-    let userHasRated = userRatings.find(o => o.movie == movie.id);
-    if(!userHasRated) {
-      let total = 0;
-      let simSum = 0;
-
-      usersSim.forEach(function(user, j) {
-        let rating = allRatings.find(o => o.user == user.userId && o.movie == movie.id);
-
-        if(rating) {
-          total += user.score * rating.rating;
-          simSum += user.score;
-        }
-      });
-
-      wsMovies.push({score: total / simSum, ...movie});
+  if(userRatings.length) { //If user has rated any movies
+    if(type === "euclidean") {
+      usersSim = euclidean.get(allRatings, userRatings, userId);
+    } else {
+      usersSim = pearson.get(allRatings, userRatings, userId);
     }
-  });
+console.log(usersSim)
+    //calculate weighted scores
+    allMovies.forEach(function(movie, i) {
+      let userHasRated = userRatings.find(o => o.movie == movie.id);
+      if(!userHasRated) { //only show movies the user hasnt rated (=viewed)
+        let total = 0;
+        let simSum = 0;
+        usersSim.forEach(function(user, j) {
+          let rating = allRatings.find(o => o.user == user.id && o.movie == movie.id);
 
-  wsMovies.sort(function(movieA, movieB){return movieB.score > movieA.score});
-  wsMovies = wsMovies.slice(0,3);
+          if(rating) {
+            total += user.score * rating.rating;
+            simSum += user.score;
+          }
+        });
 
-  cb(wsMovies);
+        wsMovies.push({score: total / simSum, ...movie});
+      }
+    });
+
+    if(!wsMovies.length) {
+      cb(null)
+    } else {
+      wsMovies.sort(function(movieA, movieB){return movieB.score > movieA.score});
+      wsMovies = wsMovies.slice(0,3);
+
+      cb(wsMovies);
+    }
+  } else {
+     //If user hasnt rated any movies, recomend highest rated
+     cb(allMovies.reverse().slice(0,3));
+  }
 }

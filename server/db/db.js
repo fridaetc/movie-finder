@@ -24,6 +24,6 @@ exports.getUserRatings = function(userId) {
   return db.get('ratings').filter({user: userId}).value();
 }
 
-exports.getMovies = function() {
-  return db.get('movies').sortBy('name').cloneDeep().value();
+exports.getMovies = function(sortBy = "name") {
+  return db.get('movies').sortBy(sortBy).cloneDeep().value();
 }
