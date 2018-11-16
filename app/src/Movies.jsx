@@ -36,10 +36,10 @@ export default class Movies extends Component {
         <h1>Movies</h1>
         <select onChange={(e) => this.selectChange(e)} defaultValue={this.state.option}>
         <option value="all">All</option>
-        <option value="euclidean">Recommended (euclidean)</option>
-        <option value="pearson">Recommended (pearson)</option>
+        <option value="euclidean">Euclidean</option>
+        <option value="pearson">Pearson</option>
         </select>
-        <div className="Error">{this.state.error}</div>
+        {this.state.error && <div className="Error">{this.state.error}</div>}
         {this.state.isLoading && <div className="Loading">...</div>}
         <div className="Movies">
           { this.state.movies.map((movie, i) => (

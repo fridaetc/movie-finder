@@ -12,7 +12,6 @@ export default withCookies(class App extends Component {
   }
 
   componentDidMount() {
-    //getcookie
     let token = this.props.cookies.get("token");
     if(token) {
       get("user", token, (data, message) => {
@@ -52,7 +51,7 @@ export default withCookies(class App extends Component {
     return (
       <div className="App">
         <div className="Login">
-          <div className="Error">{this.state.error}</div>
+          {this.state.error && <div className="Error">{this.state.error}</div>}
           {this.state.isLoading && <div className="Loading">...</div>}
           {!user && !this.state.isLoading &&
             <form onSubmit={(e) => this.login(e)}>
@@ -63,8 +62,10 @@ export default withCookies(class App extends Component {
           }
           {user && !this.state.isLoading &&
             <div className="Loggedin">
-              <h2 className="Welcome">Welcome {user.userName}</h2>
-              <span onClick={(e) => this.logout()}>Logout</span>
+              <div className="Header">
+                <h4 className="Welcome">Welcome {user.userName}</h4>
+                <span onClick={(e) => this.logout()}>Logout</span>
+              </div>
               <Movies token={user.token} />
             </div>
           }
