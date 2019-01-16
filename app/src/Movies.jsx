@@ -8,15 +8,18 @@ export default class Movies extends Component {
     isLoading: true,
     movies: [],
     error: null,
-    option: "all"
+    option: "all",
+    minRatings: 0
   }
 
   componentDidMount() {
     this.getMovies(this.state.option);
   }
 
-  getMovies(option) {
-    get("movies?show=" + option, this.props.token, (data, message) => {
+  getMovies() {
+    this.setState({isLoading: true, movies: [], error: null});
+
+    get("movies?show=" + this.state.option + "&minRatings=" + this.state.minRatings, this.props.token, (data, message) => {
       if(data) {
         this.setState({movies: data, error: null, isLoading: false});
       } else {
@@ -27,23 +30,30 @@ export default class Movies extends Component {
 
   selectChange(e) {
     this.setState({option: e.target.value});
-    this.getMovies(e.target.value);
+  }
+  inputChange(e) {
+    this.setState({minRatings: e.target.value});
+  }
+  buttonClick(e) {
+    this.getMovies();
   }
 
   render() {
     return (
       <div className="MoviesWrapper">
         <h1>Movies</h1>
-        <select onChange={(e) => this.selectChange(e)} defaultValue={this.state.option}>
-        <option value="all">All</option>
+        <div className="Button Right" onClick={(e) => this.buttonClick(e)}>Load!</div>
+        <input type="number" className="Right" value={this.state.minRatings} onChange={(e) => this.inputChange(e)} disabled={this.state.isLoading} placeholder="Min ratings" />
+        <select onChange={(e) => this.selectChange(e)} defaultValue={this.state.option} disabled={this.state.isLoading}>
+        <option value="all">My ratings</option>
         <option value="euclidean">Euclidean</option>
         <option value="pearson">Pearson</option>
         </select>
         {this.state.error && <div className="Error">{this.state.error}</div>}
-        {this.state.isLoading && <div className="Loading">...</div>}
         <div className="Movies">
+          {this.state.isLoading && <div className="Loading"><br/>Loading...</div>}
           { this.state.movies.map((movie, i) => (
-            <Movie key={movie.id} movie={movie} />
+            <Movie key={movie.movieId} movie={movie} />
           ))}
         </div>
       </div>

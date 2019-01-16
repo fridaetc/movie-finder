@@ -1,17 +1,21 @@
 exports.get = function(allRatings, userRatings, userId) {
-  let users = [], prevUser = null, score = 0, count = 0;
+  let users = [], prevUser = null, score = 0, count = 0, ratings = {};
 
   for (let i = 0; i <= allRatings.length; i++) { //Go through all users ratings
     let rating = allRatings[i];
 
     if(prevUser !== userId) { //Dont compare with youself
-      if(i == allRatings.length || (prevUser && prevUser !== rating.user)) { //if next user
+      if(i == allRatings.length || (prevUser && prevUser !== rating.userId)) { //if next user
         score = count !== 0 ? 1 / (1 + score) : 0;
-        users.push({id: prevUser, score});
+
+        if(score > 0) {
+          users.push({userId: prevUser, score, ratings});
+        }
 
         //reset
         score = 0;
         count = 0;
+        ratings = {};
       }
     }
 
@@ -19,9 +23,9 @@ exports.get = function(allRatings, userRatings, userId) {
       break;
     }
 
-    if(rating.user !== userId) { //Dont compare with youself
+    if(rating.userId !== userId) { //Dont compare with youself
       userRatings.forEach(function(userRating, j) { //compare with logged in user
-        if(rating.movie == userRating.movie) { //if users has rated same movie
+        if(rating.movieId == userRating.movieId) { //if users has rated same movie
           score += Math.pow((userRating.rating - rating.rating), 2);
           count++;
         }
@@ -29,9 +33,10 @@ exports.get = function(allRatings, userRatings, userId) {
 
     }
 
-    prevUser = rating.user;
+    ratings[rating.movieId] = rating.rating;
+    prevUser = rating.userId;
   }
 
-  users.sort(function(userA, userB){return userB.score > userA.score});
+  users.sort(function(userA, userB){return userB.score - userA.score});
   return users;
 }

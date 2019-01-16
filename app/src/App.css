@@ -60,3 +60,16 @@
   width: 240px;
   margin: auto;
 }
+
+.Button {
+  margin: 20px;
+  float: left;
+  background: #42a5f5;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.Button:hover {
+  background: #3788ca;
+}

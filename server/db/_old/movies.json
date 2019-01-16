@@ -1,0 +1,10 @@
+{
+  "movies": [
+    {"movieId": 1, "title": "You Me and Dupree", "noOfRatings": 6, "avgRating": 2.5},
+    {"movieId": 2, "title": "The Night Listener", "noOfRatings": 6, "avgRating": 3.4166666666666665},
+    {"movieId": 3, "title": "Lady in the Water", "noOfRatings": 5, "avgRating": 2.8},
+    {"movieId": 4, "title": "Snakes on a Plane", "noOfRatings": 7, "avgRating": 3.7142857142857144},
+    {"movieId": 5, "title": "Just My Luck", "noOfRatings": 4, "avgRating": 2.375},
+    {"movieId": 6, "title": "Superman returns", "noOfRatings": 7, "avgRating": 4.0}
+  ]
+}

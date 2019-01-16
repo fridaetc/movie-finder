@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const auth = require('./auth');
 const movies = require('./movies');
+const loader = require('./loader');
 
 const app = express();
 const cors = require('cors');
@@ -32,17 +33,19 @@ app.get('/movies', (req, res) => {
   checkToken(req, res, function(userId) {
     if(userId) {
       let type = req.queryString("show") || "all";
+      let minRatings = req.queryString("minRatings") || 0;
+      minRatings = parseInt(minRatings, 10);
 
       if(type == "all") {
         movies.getMovies(userId, function(movies) {
           res.status(200).send({data: movies});
         });
       } else {
-        movies.getRecommendedMovies(userId, type, function(movies) {
+        movies.getRecommendedMovies(userId, type, minRatings, function(movies) {
           if(movies) {
             res.status(200).send({data: movies});
           } else {
-            res.status(200).send({data: null, message: "You have watched all recommended movies already!"});
+            res.status(200).send({data: null, message: "No movies to recommend!"});
           }
         });
       }
@@ -55,6 +58,26 @@ app.get('/user', (req, res) => {
     if(userId) {
       auth.getUser(userId, function(user) {
         res.status(200).send({data: user});
+      });
+    }
+  });
+});
+
+app.get('/loadData', (req, res) => {
+  checkToken(req, res, function(userId) {
+    if(userId) {
+      auth.getUser(userId, function(user) {
+        if(user.userName === "Admin") {
+          loader.loadData(function(err) {
+            if(!err) {
+              res.status(200).send({data: "Success!", message: null});
+            } else {
+              res.status(200).send({data: null, message: "Something went wrong!"});
+            }
+          });
+        } else {
+          res.status(200).send({data: null, message: "No access!"});
+        }
       });
     }
   });

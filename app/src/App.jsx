@@ -8,7 +8,8 @@ export default withCookies(class App extends Component {
   state = {
     isLoading: true,
     user: null,
-    error: null
+    error: null,
+    loaderLoading: false
   }
 
   componentDidMount() {
@@ -46,13 +47,25 @@ export default withCookies(class App extends Component {
     this.setState({error: null, user: null});
   }
 
+  loadData() {
+    this.setState({loaderLoading: true});
+
+    get("loadData", this.state.user.token, (data, message) => {
+      if(data) {
+        this.setState({message: "Loaded!", loaderLoading: false});
+      } else {
+        this.setState({message: message, loaderLoading: false});
+      }
+     });
+  }
+
   render() {
     let {user} = this.state;
     return (
       <div className="App">
         <div className="Login">
           {this.state.error && <div className="Error">{this.state.error}</div>}
-          {this.state.isLoading && <div className="Loading">...</div>}
+          {this.state.isLoading && <div className="Loading">Loading...</div>}
           {!user && !this.state.isLoading &&
             <form onSubmit={(e) => this.login(e)}>
             <input id="username" type="text" placeholder="Username" />
@@ -67,6 +80,15 @@ export default withCookies(class App extends Component {
                 <span onClick={(e) => this.logout()}>Logout</span>
               </div>
               <Movies token={user.token} />
+              {user.userName === "Admin" &&
+                <div className="Button" onClick={(e) => this.loadData()}>
+                  {this.state.loaderLoading ?
+                    <span>...</span>
+                  :
+                    <span>Load data</span>
+                  }
+                </div>
+              }
             </div>
           }
         </div>

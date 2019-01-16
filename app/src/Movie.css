@@ -1,7 +1,7 @@
 .Movie {
   float: left;
   width: 32.66%;
-  height: 180px;
+  height: 175px;
   padding: 5px;
   margin-right: 1%;
   margin-bottom: 1%;
@@ -77,4 +77,10 @@
 .rating-group .rating__input:hover ~ .rating__label .rating__icon--star,
 .rating-group .rating__input:hover ~ .rating__label--half .rating__icon--star {
   color: #ddd;
+}
+.Movie h4 {
+  margin: 15px 0 10px 0;
+}
+.Movie h5 {
+  margin: 2px 0;
 }

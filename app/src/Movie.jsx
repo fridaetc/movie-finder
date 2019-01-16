@@ -33,21 +33,30 @@ export default class Movie extends Component {
       rating = userRating;
     }
 
-    let roundedRating = Math.round(rating * 2) / 2;
+    let roundedRating = rating ? Math.round(rating * 2) / 2 : 0;
+
+    let title = movie.title;
+    if(title.charAt(0) === '"' && title.charAt(title.length -1 ) === '"'){
+      title = title.substr(1, title.length - 2);
+    }
 
     return (
       <div className="Movie">
-        <h4 className="Name">{movie.name}</h4>
-        <div className={"rating-group" + (userRating !== undefined ? " user" : " avg")}>
-          {stars.map((star, i) => (
-            [
-            <label key={"label" + movie.id + i} aria-label={star + " stars"} className={"rating__label rating__label" + (i%2 === 0 ? "--half" : "")} htmlFor={"rating-" + movie.id + "-" + star.toString().replace(".", "")}>
-            <i className={"rating__icon rating__icon--star fa fa-star" + (i%2 === 0 ? "-half" : "")}></i>
-            </label>,
-            <input key={"input" + movie.id + i} className="rating__input" name={"rating-" + movie.id} id={"rating-" + movie.id + "-" + star.toString().replace(".", "")} value={star} type="radio" defaultChecked={roundedRating === star} onClick={(e) => {this.changeRating(e.target.value)}}/>
-            ]
-          ))}
-        </div>
+        <h4 className="Name">{title}</h4>
+        {movie.noOfRatings && <h5>No of ratings: {movie.noOfRatings}</h5>}
+        {movie.score && <h5>Score: {movie.score}</h5>}
+        {rating !== undefined &&
+          <div className={"rating-group" + (userRating !== undefined ? " user" : " avg")}>
+            {stars.map((star, i) => (
+              [
+                <label key={"label" + movie.movieId + i} aria-label={star + " stars"} className={"rating__label rating__label" + (i%2 === 0 ? "--half" : "")} htmlFor={"rating-" + movie.movieId + "-" + star.toString().replace(".", "")}>
+                  <i className={"rating__icon rating__icon--star fa fa-star" + (i%2 === 0 ? "-half" : "")}></i>
+                </label>,
+                <input key={"input" + movie.movieId + i} className="rating__input" name={"rating-" + movie.movieId} id={"rating-" + movie.movieId + "-" + star.toString().replace(".", "")} value={star} type="radio" defaultChecked={roundedRating === star} onClick={(e) => {this.changeRating(e.target.value)}}/>
+              ]
+            ))}
+          </div>
+        }
       </div>
     );
   }

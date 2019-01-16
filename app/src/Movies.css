@@ -16,6 +16,10 @@
   margin-right: 20px;
 }
 
+.MoviesWrapper input.Right {
+  margin: 21px 0;
+}
+
 .MoviesWrapper select, .MoviesWrapper option {
   background: #36373c;
   color: #fff;
@@ -28,4 +32,9 @@
   background: #1d1e22;
   float: left;
   width: 100%;
+}
+
+.MoviesWrapper .Right {
+  float: right;
+  max-width: 125px;
 }
